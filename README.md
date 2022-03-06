@@ -4,7 +4,7 @@ block as shown in the below before/after example code below:
 (has some bad coding style, but shows how it is handled)
 
   Before:
-'''python
+```python
 def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)
@@ -29,10 +29,10 @@ def proc_a(a, b):
             print('pushing')
         case 'pull':
             print('pulling')
-'''
+```
 
   After:
-'''python
+```python
  def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)
@@ -64,7 +64,7 @@ def proc_a(a, b):
             print('pulling')
     #end match
 #end def
-'''
+```
 
 usage: python addendblocks.py [-h] [-r] [-o] [-t] [--do_case_blk_end]
                               [--blk_end_prefix 'end '] [--blk_end_suffix '']

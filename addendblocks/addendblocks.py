@@ -314,23 +314,42 @@ def check_to_overide_end_blk(kw, str):
 def get_options_from_cmd_line():
 
     #--Set up cmd line pargser and add arguments
-    parser = argparse.ArgumentParser(prog='python pyformatter.py')
-    parser.add_argument(dest='filename', metavar='filename', default='test_input-b', nargs='?', help='the file to format')
-    parser.add_argument('-r', '--recursive', dest='recursive', action='store_true', help='recurse through sub directories')
-    parser.add_argument('-o', '--onlyremove', dest='onlyremove', action='store_true', help='only remove end blocxk comment (previously added) from source files, token file will not be made either')
-    parser.add_argument('-t', '--tokensave', dest='tokensave', action='store_true', help='save tokens to file named filename.py.tokens.txt')
-    parser.add_argument('--do_case_blk_end', dest='do_case_blk_end', action='store_true', help='add block end comments for then match case blocks (for Python 3.10 source code)')
-    parser.add_argument('--blk_end_prefix', dest='block_end_prefix', metavar="' end '", default='end ', help='prefix to prepend to end of block keyword, ie for ''if'' ''end '' would generate ''#end if''')
-    parser.add_argument('--blk_end_suffix', dest='block_end_suffix', metavar="''", default='', help='suffix to append to end of block keyword, ie for ''if'' '' end'' would generate ''#if end''')
-    parser.add_argument('--blk_end_if', dest='block_end_if', metavar="'endif'", default='', help='block end comment for ''if'', overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_try', dest='block_end_try', metavar="'endtry'", default='', help='block end comment for ''try'' exception blocks, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_for', dest='block_end_for', metavar="'next'", default='', help='block end comment for ''for'' loops, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_while', dest='block_end_while', metavar="'wend'", default='', help='block end comment for ''while'' loops, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_with', dest='block_end_with', metavar="'endwith'", default='', help='block end comment for ''with'' blocks, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_def', dest='block_end_def', metavar="'enddef'", default='', help='block end comment for ''def'' functions, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_class', dest='block_end_class', metavar="'endclass'", default='', help='block end comment for ''class'' definitions, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_match', dest='block_end_match', metavar="'endmatch'", default='', help='block end comment for ''match'' statement, overrides blk_end_prefix and blk_end_suffix')
-    parser.add_argument('--blk_end_case', dest='block_end_case', metavar="'endcase'", default='', help='block end comment for ''case'' used in ''match'' statement (--do_case_blk_end must be selected), overrides blk_end_prefix and blk_end_suffix')
+    parser = argparse.ArgumentParser(prog='python addendblocks.py',
+                                     description="Program to read Python source code and add properly indented comments at the end of indented code blocks," +
+                                                 " with appropriate names based on the keyword that the indentation is for.")
+    parser.add_argument(dest='filename', metavar='filename', default='test_input-b', nargs='?',
+                            help='the file to add/remove end block comments to/from.  Can use wild cards (*, ?) and will look in subdirectories if the -r option is selected')
+    parser.add_argument('-r', '--recursive', dest='recursive', action='store_true', 
+                            help='recurse through sub directories looking for matching files')
+    parser.add_argument('-o', '--onlyremove', dest='onlyremove', action='store_true', 
+                            help='only remove end block comments (previously added) from source files, token file will not be made either (-t)')
+    parser.add_argument('-t', '--tokensave', dest='tokensave', action='store_true', 
+                            help='save tokens to file named filename.py.tokens.txt')
+    parser.add_argument('--do_case_blk_end', dest='do_case_blk_end', action='store_true', 
+                            help="add block end comments for the 'match' 'case' blocks. Normlly only end block comments are added for the 'match' " +
+                                 "statements, not the 'case' statements in the 'match' statements. (for Python 3.10 source code)")
+    parser.add_argument('--blk_end_prefix', dest='block_end_prefix', metavar="'end '", default='end ',
+                            help="prefix to prepend to end of block keyword, ie for 'if', 'end ' would generate '#end if'")
+    parser.add_argument('--blk_end_suffix', dest='block_end_suffix', metavar="''", default='', 
+                            help="'suffix to append to end of block keyword, ie for 'if', ' end' would generate '#if end'")
+    parser.add_argument('--blk_end_if', dest='block_end_if', metavar="'endif'", default='', 
+                            help="block end comment for 'if', overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_try', dest="block_end_try", metavar="'endtry'", default="", 
+                            help="block end comment for 'try' exception blocks, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_for', dest="block_end_for", metavar="'next'", default="", 
+                            help="block end comment for 'for' loops, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_while', dest="block_end_while", metavar="'wend'", default="", 
+                            help="block end comment for 'while' loops, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_with', dest="block_end_with", metavar="'endwith'", default="", 
+                            help="block end comment for 'with' blocks, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_def', dest="block_end_def", metavar="'enddef'", default="", 
+                            help="block end comment for 'def' functions, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_class', dest="block_end_class", metavar="'endclass'", default="", 
+                            help="block end comment for 'class' definitions, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_match', dest="block_end_match", metavar="'endmatch'", default="", 
+                            help="block end comment for 'match' statement, overrides blk_end_prefix and blk_end_suffix")
+    parser.add_argument('--blk_end_case', dest="block_end_case", metavar="'endcase'", default="", 
+                            help="block end comment for 'case' used in 'match' statement (--do_case_blk_end must be selected), overrides blk_end_prefix and blk_end_suffix")
 
     #--Parse the arguments and options
     return parser.parse_args()
@@ -345,7 +364,9 @@ def setup_end_blocks(options):
     tokensave = options.tokensave
     onlyremove = options.onlyremove
 
-    #--Normanlly we don't add in 'case' end blk comments, unless asked for
+    if options.block_end_case != '': options.do_case_blk_end = True
+
+    #--Normally we don't add in 'case' end blk comments, unless asked for
     if options.do_case_blk_end: indent_key_words['case'] = ()
 
     #--Create end block comments dictrionary, used to add end block comments for indenting keywords

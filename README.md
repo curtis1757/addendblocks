@@ -62,3 +62,67 @@ def proc_a(a, b):
             print('pulling')
     #end match
 #end def
+
+usage: python addendblocks.py [-h] [-r] [-o] [-t] [--do_case_blk_end]
+                              [--blk_end_prefix 'end '] [--blk_end_suffix '']
+                              [--blk_end_if 'endif'] [--blk_end_try 'endtry']
+                              [--blk_end_for 'next'] [--blk_end_while 'wend']
+                              [--blk_end_with 'endwith']
+                              [--blk_end_def 'enddef']
+                              [--blk_end_class 'endclass']
+                              [--blk_end_match 'endmatch']
+                              [--blk_end_case 'endcase']
+                              [filename]
+
+Program to read Python source code and add properly indented comments at the
+end of indented code blocks, with appropriate names based on the keyword that
+the indentation is for.
+
+positional arguments:
+  filename              the file to add/remove end block comments to/from. Can
+                        use wild cards (*, ?) and will look in subdirectories
+                        if the -r option is selected
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r, --recursive       recurse through sub directories looking for matching
+                        files
+  -o, --onlyremove      only remove end block comments (previously added) from
+                        source files, token file will not be made either (-t)
+  -t, --tokensave       save tokens to file named filename.py.tokens.txt
+  --do_case_blk_end     add block end comments for the 'match' 'case' blocks.
+                        Normlly only end block comments are added for the
+                        'match' statements, not the 'case' statements in the
+                        'match' statements. (for Python 3.10 source code)
+  --blk_end_prefix 'end '
+                        prefix to prepend to end of block keyword, ie for
+                        'if', 'end ' would generate '#end if'
+  --blk_end_suffix ''   'suffix to append to end of block keyword, ie for
+                        'if', ' end' would generate '#if end'
+  --blk_end_if 'endif'  block end comment for 'if', overrides blk_end_prefix
+                        and blk_end_suffix
+  --blk_end_try 'endtry'
+                        block end comment for 'try' exception blocks,
+                        overrides blk_end_prefix and blk_end_suffix
+  --blk_end_for 'next'  block end comment for 'for' loops, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_while 'wend'
+                        block end comment for 'while' loops, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_with 'endwith'
+                        block end comment for 'with' blocks, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_def 'enddef'
+                        block end comment for 'def' functions, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_class 'endclass'
+                        block end comment for 'class' definitions, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_match 'endmatch'
+                        block end comment for 'match' statement, overrides
+                        blk_end_prefix and blk_end_suffix
+  --blk_end_case 'endcase'
+                        block end comment for 'case' used in 'match' statement
+                        (--do_case_blk_end must be selected), overrides
+                        blk_end_prefix and blk_end_suffix
+

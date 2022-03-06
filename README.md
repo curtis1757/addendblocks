@@ -4,6 +4,7 @@ block as shown in the below before/after example code below:
 (has some bad coding style, but shows how it is handled)
 
   Before:
+  
 def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)
@@ -31,6 +32,7 @@ def proc_a(a, b):
 
 
   After:
+  
 def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)

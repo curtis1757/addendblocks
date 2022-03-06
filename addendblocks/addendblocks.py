@@ -109,8 +109,8 @@ indent_key_words = {'if': ('elif', 'else'),
 def untokenize(tokens):
     """
     Rebuild the python code source file from the tokdens list and add in
-    properly indented comments at the end of each indented block. ie
-
+    properly indented comments at the end of each indented block.
+    """
     tokens_out = []
 
     prev_row = 1
@@ -264,7 +264,7 @@ def untokenize(tokens):
         #end if
     #end for
 
-    return "".join(tokens_out)
+    return tokens_out
 #end def
 
 #-------------------------------------------------------------------------------------------------------------
@@ -436,7 +436,7 @@ def main():
             if not onlyremove: source = add_end_blocks(source, fn, encoding)
 
             #--Save the new Python source file (replaces original)
-            with open(fn, 'w', encoding=encoding, newline='') as fout: fout.write(source)
+            with open(fn, 'w', encoding=encoding, newline='') as fout: fout.write("".join(source))
         #end for
 
     except OSError as err:

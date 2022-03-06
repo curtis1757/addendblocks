@@ -1,3 +1,5 @@
+# Just a test input file for addendblocks.py
+
 def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)

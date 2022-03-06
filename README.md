@@ -32,7 +32,8 @@ def proc_a(a, b):
 '''
 
   After:
-def proc_a(a, b):
+ ```python
+ def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)
         for j in range(4):
@@ -64,7 +65,7 @@ def proc_a(a, b):
     #end match
 #end def
 '''
-'
+
 usage: python addendblocks.py [-h] [-r] [-o] [-t] [--do_case_blk_end]
                               [--blk_end_prefix 'end '] [--blk_end_suffix '']
                               [--blk_end_if 'endif'] [--blk_end_try 'endtry']

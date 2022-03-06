@@ -1,6 +1,5 @@
 # addendblocks
-This simple python program adds a comment line at the end of each indented code
-block as shown in the below before/after example code below:
+This simple python program adds a comment line to Python source code at the end of each indented code block as shown in the below before/after example code below:
 (has some bad coding style, but shows how it is handled)
 
   Before:

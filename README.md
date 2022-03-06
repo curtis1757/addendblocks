@@ -32,7 +32,6 @@ def proc_a(a, b):
 '''
 
   After:
-```python
 def proc_a(a, b):
     if a == 3:
         for i in range(3): print(i)

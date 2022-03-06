@@ -65,7 +65,7 @@ def proc_a(a, b):
     #end match
 #end def
 ```
-
+```
 usage: python addendblocks.py [-h] [-r] [-o] [-t] [--do_case_blk_end]
                               [--blk_end_prefix 'end '] [--blk_end_suffix '']
                               [--blk_end_if 'endif'] [--blk_end_try 'endtry']
@@ -128,4 +128,4 @@ optional arguments:
                         block end comment for 'case' used in 'match' statement
                         (--do_case_blk_end must be selected), overrides
                         blk_end_prefix and blk_end_suffix
-
+```

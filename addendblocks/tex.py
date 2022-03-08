@@ -1,4 +1,11 @@
 # Just a test input file for addendblocks.py
+def send_time_update():
+    socketio.emit('time_update', f"{now():{dt_fmt}}", namespace=socketio_namespace)
+
+#-------------------------------------------------------------------------------------------------------
+@socketio.on('connect', namespace=socketio_namespace)
+def fli_connect():
+    send_sunrise_sunset()                
 
 def proc_a(a, b):
     if a == 3:

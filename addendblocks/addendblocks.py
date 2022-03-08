@@ -68,7 +68,7 @@ def untokenize(tokens):
     last_tok_type = 0
     got_async = False
     newline_end = None
-      
+
     for t in tokens:
         tok_type, token, start, end, line = t
 
@@ -81,16 +81,17 @@ def untokenize(tokens):
         #--are we all done?
         if tok_type == ENDMARKER: break
 
-        if tok_type == NAME:
+        #--have a name or an @ decorator?
+        if (tok_type == NAME) or (tok_type == OP and token == '@' and line[0:start[1]].lstrip() == ''):
             if newline:
                 if len(indents) > 0:
                     #--Do we need an end block for this?
                     if (token in indent_key_words[indents[-1][0]] and start[1] == indents[-1][1]) or start[1] > indents[-1][1]: indents[-1][2] = True
 
                     #--If our last indent was for a keyword (like 'if) with associated keywords (like 'else') and the current token/kew word is not
-                    #--one these associated keywords and we are at the same indent level  OR is the current indent level is less than the last indent level...
-                    #--then we need add one or more 'end block comments'
-                    if ((token not in indent_key_words[indents[-1][0]] and start[1] == indents[-1][1]) or start[1] < indents[-1][1]):
+                    #--one these associated keywords and we are at the same indent level  OR is the current indent level is less than the
+                    #--last indent level... then we need add one or more 'end block comments'
+                    if (((token not in indent_key_words[indents[-1][0]] and start[1] == indents[-1][1])) or start[1] < indents[-1][1]):
 
                         #--determine where to add the end block comment; should be after last line of code, before comments or blank lines
                         ins_at = last_cmt_nl if last_cmt_nl != -1 else len(tokens_out)
@@ -100,7 +101,8 @@ def untokenize(tokens):
 
                             dedent_name, indent_size, need_endblk = indents[-1]
 
-                            #--if at same indent level and token is in the list of kw's for the current kw (ie 'else' for 'if'), then don't add end blk comment yet
+                            #--if at same indent level and token is in the list of kw's for
+                            #--the current kw (ie 'else' for 'if'), then don't add end blk comment yet
                             if start[1] == indent_size and token in indent_key_words[indents[-1][0]]: break
 
                             indents.pop()
@@ -117,7 +119,7 @@ def untokenize(tokens):
                     #end if
                 #end if
 
-                #--Handle 'async def' and 'async for' by waiting for next name, which if first is 'async', then next should be 'def' or 'for' (but that is not checked)
+                #--Handle 'async def' and 'async for' by waiting for next name
                 if token == 'async':
                     got_async = True
                     last_indent = start[1]
@@ -134,21 +136,17 @@ def untokenize(tokens):
 
                     if token in indent_key_words.keys():
 
-                        #--Will we need an end block? ie the current keyword has caused another indent it will need an end blk comment 
+                        #--Will we need an end block? ie the current keyword has caused
+                        #--another indent it will need an end blk comment 
                         if len(indents) > 0: indents [-1][2] = True
                         indents.append([token, last_indent, False])
                     #end if
                 #end if
             #end if
 
-        elif tok_type == INDENT:
-            last_cmt_nl = -1
-            last_tok_type = INDENT
+        elif tok_type in (DEDENT, INDENT):
             continue
-            
-        elif tok_type == DEDENT:
-            continue
-            
+
         elif tok_type in (NEWLINE, NL):
 
             #--Remember then end of line character(s) for adding at end of end block comments, etc.
@@ -194,7 +192,7 @@ def untokenize(tokens):
         #--then before the DENT there is a NEWLINE, this is the check for that---+
         #                                                                        V
         #                                      /-----------------------------------------------\
-        if not (tok_type in (COMMENT, NL)) and not (last_tok_type == NL and tok_type == NEWLINE): 
+        if tok_type not in (COMMENT, NL) and not (last_tok_type == NL and tok_type == NEWLINE):
             last_cmt_nl = -1
         #end if
 
@@ -207,7 +205,8 @@ def untokenize(tokens):
     for _ in range(len(indents),0,-1): 
         dedent_name, indent_size, need_endblk = indents.pop()
 
-        #--if we have something like 'if a == b: print(a)' ie all on one line with no following 'else' or 'elif', then we won't put the end blk comment in
+        #--if we have something like 'if a == b: print(a)' ie all on one line with no following
+        #--'else' or 'elif', then we won't put the end blk comment in
         if need_endblk:
             tokens_out.insert(ins_at, f"{' ' * indent_size}{end_blk_cmts_dict[dedent_name]}{newline_end}")
             ins_at += 1
@@ -353,7 +352,8 @@ def add_end_blk_cmts(source_lines, fn, encoding):
         return untokenize(tokens)
 
     except IndentationError as err:
-        sys.stderr.write(f"IndentationError exception in {err.args[1][0]} while processing file:\n{fn}\nat line:{err.args[1][1]}, column:{err.args[1][2]} error: {err.args[0]}in line:\n{err.args[1][3]}")
+        sys.stderr.write(f"IndentationError exception in {err.args[1][0]} while processing file:\n{fn}\n" +
+                          "at line:{err.args[1][1]}, column:{err.args[1][2]} error: {err.args[0]}in line:\n{err.args[1][3]}")
         return ''
 
     except TokenError as err:
